@@ -1,6 +1,8 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { DataContext } from "../../context/DataContext";
+import { Box } from "@mui/material";
+import DeleteToolbar from "../molecules/DeleteToolbar";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "Ticket ID", width: 150 },
@@ -26,26 +28,36 @@ const columns: GridColDef[] = [
 
 export default function DataTable() {
   const context = useContext(DataContext);
+  const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
 
   if (!context) {
     return null;
   }
 
-  const { data } = context;
+  const { data, setData } = context;
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <Box sx={{ height: 660, width: "100%" }}>
+      <DeleteToolbar
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+        data={data}
+        setData={setData}
+      />
       <DataGrid
         rows={data}
         columns={columns}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
+            paginationModel: { page: 0, pageSize: 10 },
           },
         }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[10, 25]}
         checkboxSelection
+        onRowSelectionModelChange={(newSelection) => {
+          setSelectedRows(newSelection);
+        }}
       />
-    </div>
+    </Box>
   );
 }
