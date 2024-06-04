@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import ticketRoutes from "./routes/ticketRoutes";
 import { loadData } from "./utils/loadData";
+import { setupWebSocket } from "./ws/websocket";
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +22,8 @@ app.use(bodyParser.json());
 loadData();
 
 app.use("/api", ticketRoutes);
+
+setupWebSocket(io);
 
 httpServer.listen(3000, () => {
   console.log("Server is running on port 3000");
